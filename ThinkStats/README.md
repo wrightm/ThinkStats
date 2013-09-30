@@ -6,7 +6,7 @@ My Notes
 * Chapter 1
  
  National Survey of Family Growth example
- 
+ http://www.icpsr.umich.edu/nsfg6/
  
  Cross-sectional_study:
  http://en.wikipedia.org/wiki/Cross-sectional_study
@@ -15,3 +15,5 @@ My Notes
  
  Longitudinal_study:
  http://en.wikipedia.org/wiki/Longitudinal_study
+ 
+ 
