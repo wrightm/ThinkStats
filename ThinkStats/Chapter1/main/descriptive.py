@@ -171,7 +171,7 @@ def MakeDiffFigure(firsts, others):
 
 
 def main(name, data_dir=''):
-    data_dir = '/Volumes/Michael Wright 1/Dropbox/Projects/ThinkStats/ThinkStats/resources'
+    data_dir = '/Volumes/MichaelWright1/Dropbox/Projects/ThinkStats/ThinkStats/resources'
     pool, firsts, others = MakeTables(data_dir)
     Summarize(pool, firsts, others)
     MakeFigures(firsts, others)

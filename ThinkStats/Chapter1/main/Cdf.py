@@ -125,6 +125,16 @@ class Cdf(object):
             old_p = new_p
         return total
     
+    def Var(self):
+        mu = self.Mean()
+        var = 0.0
+        old_p = 0
+        for x, new_p in zip(self.xs, self.ps):
+            p = new_p - old_p
+            var += p*math.pow(float(x - mu), 2)
+            old_p = new_p
+        return var
+    
     def Median(self):
         return bisect.bisect(self.ps, int(len(self.ps)/2))
         
