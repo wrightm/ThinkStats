@@ -6,7 +6,7 @@ License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
 import unittest
-import thinkstats
+import chapter2.main.thinkstats as thinkstats
 
 class Test(unittest.TestCase):
 
