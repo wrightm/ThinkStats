@@ -23,7 +23,7 @@ def main():
     myplot.Hist(pmfFirsts, color='blue', edgecolor='blue')
     myplot.Hist(pmfOthers, color='green', edgecolor='green')
     myplot.Config(xlabel='weeks', ylabel='probability')
-    myplot.SaveFormat(data_dir+"plots/first_and_others_gestation_periods")
+    myplot.SaveFormat(data_dir+"plots/first_and_others_gestation_periods", "png")
     myplot.Clf()
     
     pmfFirsts = Pmf.MakePmfFromList(Trim(firsts.lengths), name = "firsts")
@@ -35,7 +35,7 @@ def main():
     myplot.Hist(pmfFirsts, color='blue', edgecolor='blue')
     myplot.Hist(pmfOthers, color='green', edgecolor='green')
     myplot.Config(xlabel='weeks', ylabel='probability')
-    myplot.SaveFormat(data_dir+"plots/trimmed_first_and_others_gestation_periods")
+    myplot.SaveFormat(data_dir+"plots/trimmed_first_and_others_gestation_periods", "png")
     myplot.Clf()
     
   

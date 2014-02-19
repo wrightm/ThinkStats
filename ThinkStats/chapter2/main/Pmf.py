@@ -239,7 +239,7 @@ class Pmf(_DictWrapper):
         modes = []
         for k, v in self.d.iteritems():
             if v == maxValue:
-                modes.append(v)
+                modes.append(k)
         return tuple(modes)
         
     def Var(self, mu=None):
