@@ -91,12 +91,6 @@ def Summarize(pool, firsts, others):
 def MakeFigures(firsts, others):
     """Plot Hists and Pmfs for the pregnancy length."""
 
-    # bar options is a list of option dictionaries to be passed to myplot.bar
-    bar_options = [
-        dict(color='0.9'),
-        dict(color='blue')
-        ]
-
     # make the histogram
     axis = [23, 46, 0, 2700]
     Hists([firsts.hist, others.hist])
