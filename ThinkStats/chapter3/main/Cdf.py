@@ -30,6 +30,7 @@ class Cdf(object):
         """Returns a sorted list of values.
         """
         return self.xs
+    
 
     def Items(self):
         """Returns a sorted sequence of (value, probability) pairs.
@@ -97,14 +98,28 @@ class Cdf(object):
         """Chooses a random value from this distribution."""
         return self.Value(random.random())
     
-    def Sample(self, n):
+    def Sample(self, n, name=''):
         """Generates a random sample from this distribution.
         
         Args:
             n: int length of the sample
         """
-        return [self.Random() for i in range(n)]
-
+        values = []
+        probs  = []
+        for i in range(n):
+            value = self.Random()
+            prob  = self.Prob(value)
+            values.append(value)
+            probs.append(prob)
+            
+        sortedValues = []
+        sortedProbs = []
+        for value, prob in sorted(zip(values, probs)):
+            sortedValues.append(value)
+            sortedProbs.append(prob)
+            
+        return Cdf(sortedValues, sortedProbs , name)
+    
     def Mean(self):
         """Computes the mean of a CDF.
 

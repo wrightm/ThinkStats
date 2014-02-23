@@ -253,6 +253,7 @@ def Config(**options):
         pyplot.axis(options['axis'])
 
     loc = options.get('loc', 0)
+    
     legend = options.get('legend', True)
     if legend:
         pyplot.legend(loc=loc)
