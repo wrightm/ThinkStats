@@ -19,6 +19,11 @@ def ExpoCdf(x, lam):
     """Evaluates CDF of the exponential distribution with parameter lam."""
     return 1 - math.exp(-lam * x)
 
+def WeibullCdf(x, lam, k):
+    """Evaluates CDF of the weibull distribution with parameter lam."""
+    z = math.pow((x/lam), k)
+    return 1 - math.exp(-1.0 * z)
+
 def ParetoCdf(x, alpha, xmin):
     """Evaluates CDF of the Pareto distribution with parameters alpha, xmin."""
     if x < xmin:
@@ -114,12 +119,49 @@ def MakeParetoCdf2():
     myplot.Save('../resources/plots/pareto_log_log_height',
                 title='Pareto CDF',
                 xlabel='height (cm)',
-                ylabel='CDF',
+                ylabel='CCDF',
                 xscale='log',
                 yscale='log',
                 legend=False)
 
+def MakeWeibullCdf():
 
+    n = 40
+    max = 2.0
+    xs = [max*i/n for i in range(n)]
+    lam = 1
+    k = 5
+    
+    ps = [ WeibullCdf(x, lam, k) for x in xs ]
+    
+    
+    pyplot.clf()
+    pyplot.plot(xs, ps, linewidth=2)
+    myplot.Save('../resources/plots/weibull_cdf',
+                title='Weibull CDF',
+                xlabel='x',
+                ylabel='CDF',
+                legend=False)
+    
+    def linearWeibullCCDF(p):
+        if p >= 1.0:
+            return 0.0
+        else:
+            return -math.log(1.0-p)
+    
+    ps = [linearWeibullCCDF(p) for p in ps ]
+
+    pyplot.clf()
+    pyplot.plot(xs, ps, linewidth=2)
+    myplot.Save('../resources/plots/weibull_log_log_ccdf',
+                title='Weibull CCDF',
+                xlabel='x',
+                ylabel='CDF',
+                xscale='log',
+                yscale='log',
+                legend=False)
+    
+    
 def RenderNormalCdf(mu, sigma, max, n=50):
     """Generates sequences of xs and ps for a normal CDF."""
     xs = [max * i / n for i in range(n)]    
