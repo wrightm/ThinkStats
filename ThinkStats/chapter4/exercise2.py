@@ -5,7 +5,7 @@ Created on 26 Feb 2014
 '''
 from chapter4.main.continuous import MakeNormalCdf, MakeNormalModel,\
     MakeNormalPlot
-from chapter4.main import cumulative, relay, rankit
+from chapter4.main import cumulative, relay, rankit, brfss, brfss_figs
 
 def main():
     
@@ -27,7 +27,15 @@ def main():
                           root='../resources/plots/relay_normal',
                           ylabel='Speed (MPH)')
     
+    resp = brfss.Respondents()
+    resp.ReadRecords('../resources')
+    resp.SummarizeHeight()
+    resp.SummarizeWeight()
+    resp.SummarizeWeightChange()
     
+    resp = brfss_figs.Respondents()
+    resp.ReadRecords('../resources')
+    resp.MakeFigures()
     
 if __name__ == '__main__':
     main()
