@@ -175,7 +175,7 @@ def MakeNormalCdf():
     
     pyplot.clf()
     pyplot.plot(xs, ps, linewidth=2)
-    myplot.Save('normal_cdf',
+    myplot.Save('../resources/plots/normal_cdf',
               title='Normal CDF',
               xlabel='x',
               ylabel='CDF',
@@ -202,7 +202,7 @@ def MakeNormalModel(weights):
     xs, ps = cdf.Render()
     pyplot.plot(xs, ps, label='data', linewidth=2, color='blue')
  
-    myplot.Save('nsfg_birthwgt_model',
+    myplot.Save('../resources/plots/nsfg_birthwgt_model',
                 title='Birth weights',
                 xlabel='birth weight (oz)',
                 ylabel='CDF')
@@ -211,7 +211,7 @@ def MakeNormalModel(weights):
 def MakeNormalPlot(weights):
     """Generates a normal probability plot of birth weights."""
     rankit.MakeNormalPlot(weights, 
-                          root='nsfg_birthwgt_normal',
+                          root='../resources/plots/nsfg_birthwgt_normal',
                           ylabel='Birth weights (oz)',)
 
 def main():

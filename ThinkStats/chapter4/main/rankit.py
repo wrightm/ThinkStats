@@ -64,7 +64,7 @@ def MakeNormalPlot(ys, root=None, line_options={}, **options):
     pyplot.plot(sorted(xs), sorted(ys), 'b.', markersize=3, **line_options)
  
     myplot.Save(root,
-                xlabel = 'Standard normal values',
+                xlabel = 'Standard normal values (quantiles)',
                 legend=False,
                 **options)
     
