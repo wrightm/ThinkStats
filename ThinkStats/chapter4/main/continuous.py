@@ -19,10 +19,18 @@ def ExpoCdf(x, lam):
     """Evaluates CDF of the exponential distribution with parameter lam."""
     return 1 - math.exp(-lam * x)
 
+def RandomExpo(lam):
+    p = random.random()
+    return (-math.log(1-p) / lam), p
+
 def WeibullCdf(x, lam, k):
     """Evaluates CDF of the weibull distribution with parameter lam."""
     z = math.pow((x/lam), k)
     return 1 - math.exp(-1.0 * z)
+
+def RandomWeibull(lam, k):
+    p = random.random()
+    return (lam *((-math.log(1-p))**(1/k))), p
 
 def ParetoCdf(x, alpha, xmin):
     """Evaluates CDF of the Pareto distribution with parameters alpha, xmin."""
@@ -33,6 +41,10 @@ def ParetoCdf(x, alpha, xmin):
 def ParetoMedian(xmin, alpha):
     """Computes the median of a Pareto distribution."""
     return xmin * pow(2, 1/alpha)
+
+def RandomPareto(xmin, alpha):
+    p = random.random()
+    return (xmin*((1-p)**(1/-alpha))), p
 
 def MakeExpoCdf():
     """Generates a plot of the exponential CDF."""
