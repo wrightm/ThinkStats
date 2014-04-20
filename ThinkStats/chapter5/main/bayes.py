@@ -28,6 +28,28 @@ P(E) - normalising constant
 
 def drug_test():
 
+    '''
+    P(A and B) = P(B)P(A|B)
+    P(A and B) = P(A)P(B|A)
+    P(A or B) = P(A) + P(B) - P(A and B)
+    if A and B are mutually exclusive (one event happens at a time)then P(A and B) = 0
+    
+    bayes:
+    
+    P(A|B)= P(A)P(B|A) / P(B)
+    
+    P(A|B) = posterior
+    P(A) = prior
+    P(B|A) = likelihood of evidence
+    P(B) = normalisation
+    
+    Drug test:
+    
+    P(A) = 0.05
+    P(B|A) = 0.60
+    P(B) = P(A)P(B|A) + P(N)P(E|N) = (0.05*0.60) + (0.99*0.01)
+    P(A|B) = P(A)P(B|A) / P(B) = (0.05*0.60) /  (0.05*0.60) + (0.99*0.01)
+    '''
     prior = 0.05
     likelihood_of_evidence = 0.60
     normalising_constant = (0.05*0.60) + (0.99*0.01)
