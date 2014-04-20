@@ -78,12 +78,12 @@ def cookies():
     B: plain cookie comes from bow 2
     
     prior:
-    P(A) = P(B) = 1
+    P(A) = P(B) = 0.5
     
     Evidence:
     E: cookie is plain
      
-    Likelihood of evidendce:
+    Likelihood of evidence:
     P(E|A): 30.0 / 40.0
     P(E|B): 20.0 / 40.0
     
