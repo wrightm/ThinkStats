@@ -151,17 +151,6 @@ def elvis_identical_twin():
     '''
     P(identical | twin) = P(identical)P(twin | identical) / P(twin)
     
-    P(twin) = 0.019
-    P(identical) = 0.002
-    P(fraternal) = 0.019 - 0.002
-
-    P(identical) = 8 %
-    P(fraternal) = 92 %
-    
-    
-    P(twin | identical) = 1
-    P(twin | fraternal) = 0.25
-    
     Hypotheses:
     A: Elvis was an identical twin
     B: Elvis was a fraternal twin
@@ -171,7 +160,7 @@ def elvis_identical_twin():
     P(B) = 92%
     
     Evidence:
-    E: elvis was male
+    E: elvis twin was male
     
     P(E|A) = 1
     P(E|B) = 0.5
