@@ -171,7 +171,6 @@ def elvis_identical_twin():
     P(E) = (0.08 * 1) + (0.92 * 0.5)
     P(A|E) =  (0.08 * 1) / ((0.08 * 1) + (0.92 * 0.5))
     
-    
     '''
     prior = 0.08
     likelihood_of_evidence = 1.0
