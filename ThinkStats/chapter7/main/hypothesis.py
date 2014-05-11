@@ -51,24 +51,60 @@ def RunTest(root,
         model2 = actual2
 
     # P(E|H0)
-    peh0 = Test(root + '_deltas_cdf',
-                actual1, actual2, pool, pool,
-                iters, plot=True)
+    peh0, peh0_plus_sigma, peh0_minus_sigma  = Test(root + '_deltas_cdf',
+                                                    actual1, actual2, pool, pool,
+                                                    iters, plot=True)
 
     # P(E|Ha)
-    peha = Test(root + '_deltas_ha_cdf',
-               actual1, actual2, model1, model2,
-               iters)
+    peha, peha_plus_sigma, peha_minus_sigma = Test(root + '_deltas_ha_cdf',
+                                                   actual1, actual2, model1, model2)
 
     prior = 0.5
+    # Median 
     pe = prior*peha + (1-prior)*peh0
-    posterior = prior*peha / pe
-    print 'P(E|H0) =', peh0
-    print 'P(E|Ha) =', peha
-    print 'P(E) =', pe
-    print 'Posterior =', posterior
+    if pe <= 0.0:
+        posterior = 1.00
+    else:
+        posterior = prior*peha / pe
+    # + Sigma
+    pe_plus_sigma = prior*peha_plus_sigma + (1-prior)*peh0_plus_sigma
+    if pe_plus_sigma <= 0.0:
+        posterior_plus_sigma = 1.00
+    else:
+        posterior_plus_sigma = prior*peha_plus_sigma / pe_plus_sigma
+    # - Sigma
+    pe_minus_sigma = prior*peha_minus_sigma + (1-prior)*peh0_minus_sigma
+    if pe_minus_sigma <= 0.0:
+        posterior_minus_sigma = 1.00
+    else:
+        posterior_minus_sigma = prior*peha_minus_sigma / pe_minus_sigma
+    
+    # Print Info
+    print 'Prior =', prior
+    print 'P(E|H0): %s + Sigma %s - Sigma %s' % (peh0,peh0_plus_sigma,peh0_minus_sigma)
+    print 'P(E|Ha): %s + Sigma %s - Sigma %s' % (peha,peha_plus_sigma,peha_minus_sigma)
+    print 'P(E): %s + Sigma %s - Sigma %s' % (pe,pe_plus_sigma,pe_minus_sigma)
+    print 'Posterior: %s + Sigma %s - Sigma %s' % (posterior, posterior_plus_sigma, posterior_minus_sigma)
+    
+    # Median
+    if not peh0:
+        print 'Likelihood Ratio = P(E|Ha) / P(E|H0) = ', 1.0
+    else:
+        print 'Likelihood Ratio = P(E|Ha) / P(E|H0) = ', peha / peh0
 
+    # + Sigma
+    if not peh0_plus_sigma:
+        print 'Likelihood Ratio + Sigma = P(E|Ha) / P(E|H0) = ', 1.0
+    else:
+        print 'Likelihood Ratio + Sigma = P(E|Ha) / P(E|H0) = ', peha_plus_sigma / peh0_plus_sigma
 
+    # - Sigma
+    if not peh0_minus_sigma:
+        print 'Likelihood Ratio - Sigma = P(E|Ha) / P(E|H0) = ', 1.0
+    else:
+        print 'Likelihood Ratio - Sigma = P(E|Ha) / P(E|H0) = ', peha_minus_sigma / peh0_minus_sigma
+
+    
 def Test(root, actual1, actual2, model1, model2, iters=1000, plot=False):
     """Estimates p-values based on differences in the mean.
     
@@ -86,19 +122,27 @@ def Test(root, actual1, actual2, model1, model2, iters=1000, plot=False):
     
     mu1, mu2, delta = DifferenceInMean(actual1, actual2)
     delta = abs(delta)
+    var1 = thinkstats.Var(actual1, mu1)
+    var2 = thinkstats.Var(actual2, mu2)
+    delta_std_dev = 0.0
+    if n > 0 and m > 0:
+        delta_std_dev = math.fabs(math.sqrt((var1/n) + (var2/m)))
 
-    cdf, pvalue = PValue(model1, model2, n, m, delta, iters)
+    cdf, pvalue, pvalue_std_dev_plus, pvalue_std_dev_minus = PValue(model1, model2, n, m, delta, delta_std_dev, iters)
     print 'n:', n
     print 'm:', m
     print 'mu1', mu1
     print 'mu2', mu2
-    print 'delta', delta
+    print 'delta %s +/- %s' % (delta, delta_std_dev)
     print 'p-value', pvalue
+    print 'p-value %s + 1 sigma %s' % (pvalue, pvalue_std_dev_plus)
+    print 'p-value %s - 1 sigma %s' % (pvalue, pvalue_std_dev_minus)
+    
 
     if plot:
         PlotCdf(root, cdf, delta)
         
-    return pvalue
+    return pvalue, pvalue_std_dev_plus, pvalue_std_dev_minus
     
     
 def DifferenceInMean(actual1, actual2):
@@ -117,7 +161,7 @@ def DifferenceInMean(actual1, actual2):
     return mu1, mu2, delta
 
 
-def PValue(model1, model2, n, m, delta, iters=1000):
+def PValue(model1, model2, n, m, delta, delta_std_dev, iters=1000):
     """Computes the distribution of deltas with the model distributions.
 
     And the p-value of the observed delta.
@@ -136,15 +180,27 @@ def PValue(model1, model2, n, m, delta, iters=1000):
 
     cdf = Cdf.MakeCdfFromList(deltas)
 
+    delta_plus_sigma =  delta + delta_std_dev
+    delta_minus_sigma =  delta - delta_std_dev
     # compute the two tail probabilities
     left = cdf.Prob(-delta)
     right = 1.0 - cdf.Prob(delta)
+
+    left_plus_sigma = cdf.Prob(-delta_plus_sigma)
+    right_plus_sigma = 1.0 - cdf.Prob(delta_plus_sigma)
+    
+    left_minus_sigma = cdf.Prob(-delta_minus_sigma)
+    right_minus_sigma = 1.0 - cdf.Prob(delta_minus_sigma)
     
     pvalue = left + right
     print 'Tails (left, right, total):', left, right, left+right
-
-    return cdf, pvalue
-
+        
+    pvalue_minus_sigma = left_minus_sigma + right_minus_sigma 
+    print '- Sigma Tails (left, right, total):', left_minus_sigma, right_minus_sigma, left_minus_sigma+right_minus_sigma
+    pvalue_plus_sigms = left_plus_sigma + right_plus_sigma
+    print '+ Sigma Tails (left, right, total):', left_plus_sigma, right_plus_sigma, left_plus_sigma+right_plus_sigma
+    
+    return cdf, pvalue, pvalue_minus_sigma, pvalue_plus_sigms
 
 def PlotCdf(root, cdf, delta):
     """Draws a Cdf with vertical lines at the observed delta.
@@ -154,6 +210,7 @@ def PlotCdf(root, cdf, delta):
        cdf: Cdf object
        delta: float observed difference in means    
     """
+    pyplot.clf()
     def VertLine(x):
         """Draws a vertical line at x."""
         xs = [x, x]
@@ -184,6 +241,7 @@ def Resample(t1, t2, n, m):
         n: size of the sample to draw from t1
         m: size of the sample to draw from t2
     """
+    
     sample1 = SampleWithReplacement(t1, n)
     sample2 = SampleWithReplacement(t2, m)
     mu1, mu2, delta = DifferenceInMean(sample1, sample2)
