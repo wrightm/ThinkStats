@@ -95,7 +95,7 @@ def ChiSquared(expected, observed):
     return sum(t)
 
 
-def Test(pool, firsts, others, num_trials=1000):
+def TestProbEarlyProbOnTimeProbLate(pool, firsts, others, num_trials=1000):
     # collect the functions from risk.py that take Pmfs and compute
     # various probabilities
     funcs = [risk.ProbEarly, risk.ProbOnTime, risk.ProbLate]
@@ -137,11 +137,50 @@ def Test(pool, firsts, others, num_trials=1000):
 
     return pvalue
 
+def TestProbEarly(pool, firsts, others, num_trials=1000):
+    # collect the functions from risk.py that take Pmfs and compute
+    # various probabilities
+    funcs = [risk.ProbEarly]
+    
+    # get the observed frequency in each bin
+    print 'observed'
+    observed = ComputeRows(firsts, others, funcs, probs=None)
+    print observed
+
+    # compute the expected frequency in each bin
+    tables = [firsts, others]
+    probs = [func(pool.pmf) for func in funcs]
+    print 'expected'
+    expected = ComputeRows(firsts, others, funcs, probs=probs)
+    print expected
+
+    # compute the chi-squared stat
+    print 'chi-squared'
+    threshold = ChiSquared(expected, observed)
+    print threshold
+
+    print 'simulated %d trials' % num_trials
+    chi2s = []
+    count = 0
+    for _ in range(num_trials):
+        simulated = ComputeRows(firsts, others, funcs, probs=probs, 
+                            row_func=SimulateRow)
+        chi2 = ChiSquared(expected, simulated)
+        chi2s.append(chi2)
+        if chi2 >= threshold:
+            count += 1
+            
+    print 'max chi2 =',max(chi2s)
+    print 'number of simulated chi2 greater than actual dataset = ', count
+    pvalue = float(count) / float(num_trials)
+    print 'p-value =', pvalue
+
+    return pvalue
 
 def main():
     # get the data
     pool, firsts, others = descriptive.MakeTables()
-    Test(pool, firsts, others, num_trials=1000)
+    TestProbEarlyProbOnTimeProbLate(pool, firsts, others, num_trials=1000)
 
 
 if __name__ == "__main__":
